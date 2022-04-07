@@ -2,13 +2,9 @@ package com.example.todo
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.room.Room
 import com.example.todo.dao.TodoDao
 import com.example.todo.databinding.ActivityMainBinding
-import com.example.todo.models.Category
-import com.example.todo.models.ToDo
-import com.example.todolist.MainApplication
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
