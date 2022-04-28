@@ -10,9 +10,8 @@ data class ToDo(
     @PrimaryKey(autoGenerate = true) var id: Int? = null,
     @ColumnInfo(name = "title") var title: String? = null,
     @ColumnInfo(name = "description") var description: String? = null,
-    @ColumnInfo(name = "status") var status: Boolean? = null,
+    @ColumnInfo(name = "completed") var completed: Boolean? = null,
     @ColumnInfo(name = "categoryId") var categoryId: Int? = null,
     @ColumnInfo(name = "duration") var duration: String? = null,
-
     ) {
 }

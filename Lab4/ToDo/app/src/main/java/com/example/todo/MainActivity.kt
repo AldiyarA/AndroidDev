@@ -2,6 +2,7 @@ package com.example.todo
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.navigation.fragment.NavHostFragment
 import androidx.room.Room
 import com.example.todo.dao.TodoDao
 import com.example.todo.databinding.ActivityMainBinding
@@ -12,21 +13,23 @@ class MainActivity : AppCompatActivity() {
     private lateinit var todoDao: TodoDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        binding = ActivityMainBinding.inflate(layoutInflater)
+//        setContentView(binding.root)
+//
+//        db = Room.databaseBuilder(this, AppDatabase::class.java, "todo_db")
+//        .allowMainThreadQueries()
+//            .fallbackToDestructiveMigration()
+//            .build()
+//        todoDao = db.todoDao()
+//
+//        val todolist = ToDoList(todoDao)
+
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
+//        AppPreferences.setup(applicationContext)
 
-        db = Room.databaseBuilder(this, AppDatabase::class.java, "todo_db")
-        .allowMainThreadQueries()
-            .fallbackToDestructiveMigration()
-            .build()
-        todoDao = db.todoDao()
-
-        val todolist = ToDoList(todoDao)
-
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fragment, todolist)
-            commit()
-        }
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navHostController = navHostFragment.navController
     }
 }

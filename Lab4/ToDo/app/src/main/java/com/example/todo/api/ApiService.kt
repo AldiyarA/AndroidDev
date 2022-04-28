@@ -2,7 +2,10 @@
 package com.example.todolist.api
 
 import com.example.todo.models.ToDo
+import okhttp3.OkHttpClient
 import retrofit2.Call
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 interface ApiService {
@@ -11,18 +14,17 @@ interface ApiService {
 
     @GET("todos/{id}/")
     fun getTodoById(@Path("id") todoId: Int): Call<ToDo>
+}
 
-    @GET("todos/")
-    fun getTodosByUserId(
-        @Query("completed") completed: Boolean,
-        @Query("userId") userId: Int
-    ): Call<List<ToDo>>
+fun createApiService(): ApiService {
+    val url = "https://jsonplaceholder.typicode.com/"
+    val client = OkHttpClient.Builder()
+        .build()
+    val retrofit = Retrofit.Builder()
+        .baseUrl(url)
+        .client(client)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
 
-    @FormUrlEncoded
-    @POST("todos/")
-    fun createTodo(
-        @Field("userId") userId: Int,
-        @Field("title") title: String,
-        @Field("completed") completed: Boolean,
-    ): Call<ToDo>
+    return retrofit.create(ApiService::class.java)
 }

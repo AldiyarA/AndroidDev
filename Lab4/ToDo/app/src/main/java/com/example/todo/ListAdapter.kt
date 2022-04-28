@@ -1,21 +1,17 @@
 package com.example.todo
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
-import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.models.ToDo
+import androidx.recyclerview.widget.RecyclerView
 
-class ListAdapter(
-    private val dataSet: ArrayList<ToDo>,
-    private val clickHandler: (ToDo) -> Unit
-) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
+class ListAdapter(private var dataSet: ArrayList<ToDo>, private val clickHandler: (ToDo) -> Unit
+) :RecyclerView.Adapter<ListAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
         val todoName: TextView = view.findViewById(R.id.todoName)
@@ -28,7 +24,6 @@ class ListAdapter(
             }
         }
     }
-
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         Log.e("UserListAdapter", "onCreateViewHolder")
         val view = LayoutInflater.from(viewGroup.context)
@@ -40,7 +35,7 @@ class ListAdapter(
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val todo = dataSet.get(position)
         viewHolder.todoName.text = todo.title
-        if (todo.status == true){
+        if (todo.completed == true){
             viewHolder.status.text = "Done"
             viewHolder.status.setTextColor(Color.parseColor("#00FF00"))
         }else{
@@ -53,6 +48,8 @@ class ListAdapter(
             clickHandler(dataSet[position])
         }
     }
-
+    fun setList(todos: List<ToDo>){
+        dataSet = todos as ArrayList<ToDo>
+    }
     override fun getItemCount() = dataSet.size
 }

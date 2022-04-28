@@ -7,17 +7,24 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todo.dao.TodoDao
 import com.example.todo.databinding.FragmentListBinding
 import com.example.todo.models.Category
 import com.example.todo.models.ToDo
-import com.google.gson.Gson
+import com.example.todolist.api.createApiService
+import okhttp3.internal.notify
+import okhttp3.internal.notifyAll
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class ToDoList(private val todoDao: TodoDao) : Fragment() {
+class ToDoList() : Fragment() {
     private lateinit var binding: FragmentListBinding
     private lateinit var todoWithCategoryDao: TodoDao
     private lateinit var todos: List<ToDo>
+    private lateinit var adapter: ListAdapter
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,45 +45,38 @@ class ToDoList(private val todoDao: TodoDao) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        todos = todoDao.getAll()
-
+        val service = createApiService()
         Log.e("fragment ", "onViewCreated")
 
         var recycleView = binding.recycleView
 
         val llm = LinearLayoutManager(activity)
-        val la = ListAdapter(todos as ArrayList<ToDo>){
+        val todos = ArrayList<ToDo>()
+        adapter = ListAdapter(todos){
             goDetails(it)
         }
-        Log.e("fragment ", ""+la.itemCount)
+        Log.e("fragment ", ""+adapter.itemCount)
 
-        recycleView.adapter = la
+        recycleView.adapter = adapter
         recycleView.layoutManager = llm
 
-    }
 
-    private fun genElements(): ArrayList<ToDo> {
-        val category = Category(1, "Home work")
+        service.getTodos().enqueue(object: Callback<List<ToDo>>{
+            override fun onResponse(call: Call<List<ToDo>>, response: Response<List<ToDo>>) {
+                val todos = response.body() ?: return
+                adapter.setList(todos)
+                adapter.notifyItemRangeInserted(0, todos.size)
+            }
 
-        val todos = ArrayList<ToDo>();
+            override fun onFailure(call: Call<List<ToDo>>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+        })
 
-        for (i in 10..15) {
-            val todo = ToDo(i, "Task $i", "Do android lab $i", false, 1, "today")
-            todoDao.insert(todo)
-            todos.add(todo)
-        }
-        Log.e("", ""+todos)
-        return todos
     }
 
     private fun goDetails(todo: ToDo){
-        val transaction = activity?.supportFragmentManager?.beginTransaction()
-        var bundle = Bundle()
-        bundle.putString("todo", Gson().toJson(todo))
-        var todoDetailFragment = ToDoDetail()
-        todoDetailFragment.arguments = bundle
-        transaction?.replace(R.id.fragment, todoDetailFragment)
-        transaction?.addToBackStack("todo-details")
-        transaction?.commit()
+        val action = ToDoListDirections.actionFromListToDetail(todo.id!!)
+        findNavController().navigate(action)
     }
 }
