@@ -1,5 +1,6 @@
 package com.example.todo
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,20 +8,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
-import com.example.todo.dao.TodoDao
+import com.example.todo.contract.TodoDetailInterface
 import com.example.todo.databinding.FragmentToDoDetailBinding
-import com.example.todo.models.ToDo
-import com.example.todolist.api.createApiService
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.todo.models.Todo
+import com.example.todo.presenter.TodoDetailPresenter
 
 
-class ToDoDetail : Fragment() {
+class ToDoDetail : Fragment(), TodoDetailInterface.ViewInterface {
     private lateinit var binding: FragmentToDoDetailBinding
-    private lateinit var db: AppDatabase
-    private lateinit var todoDao: TodoDao
     private val args: ToDoDetailArgs by navArgs()
+    private lateinit var presenter: TodoDetailPresenter
+    private lateinit var todo: Todo
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,29 +32,17 @@ class ToDoDetail : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val service = createApiService()
-
-//
-//        val jsonTodo = arguments?.getString("todo", "").toString()
-//        val todo = Gson().fromJson(jsonTodo, ToDo::class.java)
         val todoId = args.todoId
-        service.getTodoById(todoId).enqueue(object: Callback<ToDo>{
-            override fun onResponse(call: Call<ToDo>, response: Response<ToDo>) {
-                val todo = response.body() ?: return
-                displayTodo(todo)
-            }
+        presenter = TodoDetailPresenter(this, todoId!!)
 
-            override fun onFailure(call: Call<ToDo>, t: Throwable) {
-                TODO("Not yet implemented")
-            }
-        })
     }
 
-    private fun displayTodo(todo: ToDo) {
+    @SuppressLint("SetTextI18n")
+    private fun displayTodo(todo: Todo) {
         binding.todoTitle.text = todo.title
-        binding.todoDescription.text = todo.description
-        binding.todoCategory.text = "Home work"
-        binding.todoDuration.text = todo.duration
+//        binding.todoDescription.text = todo.description
+        binding.todoCategory.text = "User ${todo.userId}"
+//        binding.todoDuration.text = todo.duration
         if (todo.completed == true) {
             binding.todoStatus.text = "Done"
             binding.todoStatus.setTextColor(Color.parseColor("#00FF00"))
@@ -63,5 +50,10 @@ class ToDoDetail : Fragment() {
             binding.todoStatus.text = "Not done"
             binding.todoStatus.setTextColor(Color.parseColor("#FF0000"))
         }
+    }
+
+    override fun getDataFromPresenter(value: Todo) {
+        todo = value
+        displayTodo(todo)
     }
 }

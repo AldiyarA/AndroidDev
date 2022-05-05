@@ -7,10 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.example.todo.models.ToDo
+import com.example.todo.models.Todo
 import androidx.recyclerview.widget.RecyclerView
 
-class ListAdapter(private var dataSet: ArrayList<ToDo>, private val clickHandler: (ToDo) -> Unit
+class ListAdapter(private var dataSet: ArrayList<Todo>, private val clickHandler: (Todo) -> Unit
 ) :RecyclerView.Adapter<ListAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
@@ -48,8 +48,8 @@ class ListAdapter(private var dataSet: ArrayList<ToDo>, private val clickHandler
             clickHandler(dataSet[position])
         }
     }
-    fun setList(todos: List<ToDo>){
-        dataSet = todos as ArrayList<ToDo>
+    fun setList(todos: List<Todo>){
+        dataSet = todos as ArrayList<Todo>
     }
     override fun getItemCount() = dataSet.size
 }
