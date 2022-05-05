@@ -1,6 +1,5 @@
 package com.example.todo.model
 
-import android.util.Log
 import com.example.todo.api.TodoClient
 import com.example.todo.contract.TodoDetailInterface
 import com.example.todo.models.Todo
@@ -19,13 +18,11 @@ class TodoDetailModel(var todoId: Int) : TodoDetailInterface.ModelInterface {
                 call: Call<Todo>,
                 response: Response<Todo>
             ) {
-                Log.e(Todo::class.java.simpleName, response.toString())
                 todo = response.body()
                 updateValue()
             }
 
             override fun onFailure(call: Call<Todo>, t: Throwable) {
-                Log.e(Todo::class.java.simpleName, "error on get value", t)
             }
         })
     }

@@ -2,7 +2,6 @@ package com.example.todo
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,10 +19,8 @@ class ToDoList() : Fragment(), TodoListInterface.ViewInterface {
     private lateinit var todos: List<Todo>
     private lateinit var adapter: ListAdapter
 
-    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.e("fragment ", "onCreate")
     }
 
     override fun onCreateView(
@@ -32,7 +29,6 @@ class ToDoList() : Fragment(), TodoListInterface.ViewInterface {
         ): View? {
         binding = FragmentListBinding.inflate(layoutInflater)
 
-        Log.e("fragment ", "onCreateView")
 
         return binding.root
     }
@@ -52,16 +48,14 @@ class ToDoList() : Fragment(), TodoListInterface.ViewInterface {
 
         val llm = LinearLayoutManager(activity)
         val todos = ArrayList<Todo>()
-        adapter = ListAdapter(todos){
+        adapter = ListAdapter(this, todos){
             goDetails(it)
         }
-        Log.e("fragment ", ""+adapter.itemCount)
         recycleView.adapter = adapter
         recycleView.layoutManager = llm
     }
 
     override fun getDataFromPresenter(value: List<Todo>) {
-        Log.e("Response on view", value.toString())
         todos = value
         adapter.setList(todos)
         adapter.notifyItemRangeInserted(0, adapter.itemCount-1)

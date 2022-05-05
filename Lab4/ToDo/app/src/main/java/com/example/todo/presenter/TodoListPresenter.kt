@@ -20,7 +20,6 @@ class TodoListPresenter(_view: TodoListInterface.ViewInterface) : TodoListInterf
     }
 
     override fun getUpdatedData(value: List<Todo>) {
-        Log.e("Response on Presenter", value.toString())
         todoList = value
         view.getDataFromPresenter(todoList!!)
     }

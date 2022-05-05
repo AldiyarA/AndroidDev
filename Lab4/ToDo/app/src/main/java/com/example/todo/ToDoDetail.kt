@@ -25,7 +25,6 @@ class ToDoDetail : Fragment(), TodoDetailInterface.ViewInterface {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         binding = FragmentToDoDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -37,17 +36,13 @@ class ToDoDetail : Fragment(), TodoDetailInterface.ViewInterface {
 
     }
 
-    @SuppressLint("SetTextI18n")
     private fun displayTodo(todo: Todo) {
         binding.todoTitle.text = todo.title
-//        binding.todoDescription.text = todo.description
-        binding.todoCategory.text = "User ${todo.userId}"
-//        binding.todoDuration.text = todo.duration
         if (todo.completed == true) {
-            binding.todoStatus.text = "Done"
+            binding.todoStatus.text = getString(R.string.done)
             binding.todoStatus.setTextColor(Color.parseColor("#00FF00"))
         } else {
-            binding.todoStatus.text = "Not done"
+            binding.todoStatus.text = getString(R.string.not_done)
             binding.todoStatus.setTextColor(Color.parseColor("#FF0000"))
         }
     }
